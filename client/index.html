@@ -10,18 +10,19 @@
     <script src="bower_components/underscore/underscore-min.js"></script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
-    <script src="scripts/app.js"></script>
   </head>
   <body>
     <div id="main">
       <h1>chatterbox</h1>
       <h3>Select your room:</h3>
       <select id="roomSelect"></select>
-      <form>
+      <form id="send" method="post" action='#'>
       <textarea cols='50' rows='4' id='message'></textarea>
-      <button id='submit'>Send Message</button>
+      <button type='submit' class='submit'>Send</button>
       </form>
       </div>
-    <div id="chats"></div>
+    <div id="chats">
+    </div>
+    <script src="scripts/app.js"></script>
   </body>
 </html>

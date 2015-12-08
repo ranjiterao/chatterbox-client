@@ -1,107 +1,75 @@
-// $('#submit').on('click', function() {
-//   console.log('clicked')
-//   var messageObj = {};
+var app = {
+  server: 'https://api.parse.com/1/classes/chatterbox',
 
-//   // messageObj.username = window.location.search.split('=')[1];
+  addFriend: function(username) {},
 
-//   messageObj.text = $('#message').val();
+  handleSubmit: function() {
+    console.log("handleSubmit was called")
+  }, 
 
-//   messageObj.roomname = '4chan';
+  init: function() {
+    console.log('init ran')
+    $('#chats').on('click', '.username', function() {
+      console.log('clicked')
+      var username = $(this).text();
+      app.addFriend(username);
+    })
 
-//   console.log(messageObj);
+    $('#send').on('submit', function(event) {
+      event.preventDefault();
+      console.log('clicked');
+      app.handleSubmit();
+    })
+  },
 
-//   return messageObj;
-// });
-
-// $('button').on('click', function() {
-// })
-
-var app = $.ajax({
+  send: function(message) {
+    $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'https://api.parse.com/1/classes/chatterbox',
-    type: 'GET',
-    data: '',
-    contentType: 'application/json',
-    success: function (data) {
-      console.dir(data);
-    },
-    error: function (data) {
+      url: app.server,
+      type: 'POST',
+      data: JSON.stringify(message),
+      contentType: 'application/json',
+      success: function (data) {
+        console.log('chatterbox: Message sent');
+      },
+      error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-      console.error('chatterbox: Failed to get messages');
-    }
-  });
-
-app.init = function() {}
-
-app.send = function(message) {
-
-  $.ajax({
-    // This is the url you should use to communicate with the parse API server.
-    url: 'https://api.parse.com/1/classes/chatterbox',
-    type: 'POST',
-    data: JSON.stringify(message),
-    contentType: 'application/json',
-    success: function (data) {
-      console.log('chatterbox: Message sent');
-    },
-    error: function (data) {
-      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-      console.error('chatterbox: Failed to send message');
-    }
-  });
-  
-}
-
-app.fetch = function(message) {
-  return $.ajax({
-    // This is the url you should use to communicate with the parse API server.
-    url: message,
-    type: 'GET',
-    data: '',
-    contentType: 'application/json',
-    success: function (data) {
-      console.dir(data)
-      // app.addMessage(data)
-
-      for (var i = 0; i < chats.length; i++) {
-        $('<div id="&amp&lt&gt' + chats[i].username + '"><span class="chat username">@' + chats[i].username + ': </span>' + chats[i].text + '</div>').appendTo('#chats');
+        console.error('chatterbox: Failed to send message');
       }
-    },
-    error: function (data) {
-      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-      console.error('chatterbox: Failed to get messages');
-    }
-  })
+    });
+  },
+
+  fetch: function() {
+
+    $.ajax({
+    // This is the url you should use to communicate with the parse API server.
+      url: app.server,
+      type: 'GET',
+      data: 'jsonp',
+      success: function(data) {
+
+        for (var i = 0; i < data.results.length; i++) {
+          var origText = data.results[i].text;
+          var origUsername = data.results[i].username;
+          $('<div>').text(origText).appendTo('#chats');
+        }
+      }
+    });
+  },
+
+  clearMessages: function() {
+    $('#chats').empty();
+  },
+
+  addMessage: function(message) {
+    $('<div><span class="chat username">' + message.username + '</span>' + message.text + '</div>').appendTo('#chats');
+  },
+
+  addRoom: function(roomName) {
+    $('<option>' + roomName + '</option>').appendTo('#roomSelect');
+  }
+
 };
-
-app.clearMessages = function() {
-  $('#chats').empty();
-}
-
-app.addMessage = function(message) {
-  $('<div><span class="chat username">@' + message.username + ': </span>' + message.text + '</div>').appendTo('#chats');
-}
-
-app.addRoom = function(roomName) {
-  $('<option>' + roomName + '</option>').appendTo('#roomSelect');
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
