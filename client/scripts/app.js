@@ -10,18 +10,22 @@ var app = {
     var message = {
       username: window.location.search.split('=')[1],
       text: $('#message').val(),
-      roomname: $('#roomName span').text() ? $('#roomName span').text() : "All Messages"
+      roomname: $('#roomName').text() ? $('#roomName').text() : "All Messages"
     };
 
     $('#message').val("What do you want to say?");
+    console.dir(message)
     app.send(message)
   }, 
   
   selectRoom: function(roomName) {
     // change the location to ?roomname=roomName
     $('#roomName').text(roomName);
+    $('#roomSelect option').text(roomName)
     console.log(roomName + ' selected')
     // change the messages displayed
+    app.clearMessages();
+    app.fetch();
   },
 
   init: function() {
@@ -75,7 +79,7 @@ var app = {
       type: 'GET',
       data: 'json',
       success: function(data) {
-        console.log(data)
+        console.log(data.results.filter(function(object) { return object.roomname === "roomname" }))
 
         for (var i = 0; i < data.results.length; i++) {
           app.addMessage(data.results[i]);
@@ -94,11 +98,13 @@ var app = {
     var roomName = message.roomname;
     var origText = message.text;
     var origUsername = message.username;
-    if(origText !== '') {
-      var $message = $('<div>').text(origText);
-      var $username = $('<span class="chat username">').text(origUsername);
-      var $messageDiv = $('<div>').append($username).append($message)
-      $messageDiv.appendTo('#chats');
+    if (origText !== '') {
+      if ($('#roomName').text() === roomName || $('#roomName').text() === "All Messages") {
+        var $message = $('<div>').text(origText);
+        var $username = $('<span class="chat username">').text(origUsername);
+        var $messageDiv = $('<div>').append($username).append($message)
+        $messageDiv.appendTo('#chats');
+      }
     }
     app.addRoom(roomName);
   },
@@ -106,7 +112,7 @@ var app = {
   addRoom: function(roomName) {
     
     if (app.rooms.indexOf(roomName) < 0) {
-      if (roomName !== null) {
+      if (roomName) {
         app.rooms.push(roomName);
       }
     }
@@ -125,7 +131,6 @@ var app = {
 
     for (var i = 0; i < app.rooms.length; i++ ) {
       $('<option class="room">').text(app.rooms[i]).appendTo('#roomSelect')
-      // $roomname.appendTo('#roomSelect');
     }
   }
 
