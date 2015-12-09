@@ -6,6 +6,10 @@ body {
     line-height: 2em;
 }
 
+a {
+    font-size: 0.5em;   
+}
+
 #main, #chats {
     width: 500px;
     margin: auto;
@@ -66,8 +70,13 @@ form input[type=text] {
     background-color: #eee;
 }
 
+
 .chat .username {
     font-weight: 800;
+}
+
+.friend {
+    background-color: #79d279;
 }
 
 .chat:hover {
